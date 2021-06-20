@@ -1,7 +1,7 @@
 class CountdownTimer {
-  constructor({selector,targetDate,onTic}) {
+  constructor({selector,targetDate,onTick}) {
     this.targetDate = targetDate;
-    this.onTic = onTic;
+    this.onTick = onTick;
     const timerRef = document.querySelector(selector);
     this.refs = {
   days: timerRef.querySelector('span[data-value="days"]'),
@@ -15,17 +15,29 @@ class CountdownTimer {
       setInterval(() => {
       const currentTime = Date.now();
       const deltaTime = this.targetDate-currentTime;
-      const time = createTimeConponents(deltaTime);
+      const time = this.createTimeConponents(deltaTime);
       
-      this.onTic(time,this.refs)
+        this.onTick(time, this.refs)
+    
     }, 1000);
-}
+  }
+  
+  createTimeConponents(time) {  
+  const days = Math.floor(time / (1000 * 60 * 60 * 24));  
+  const hours = Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const mins = Math.floor((time % (1000 * 60 * 60)) / (1000 * 60));  
+  const secs = Math.floor((time % (1000 * 60)) / 1000);
+
+  return { days, hours, mins, secs };
+
+  }
+  
 };
 
 const countdownTimer = new CountdownTimer({
   selector: '#timer-1',
   targetDate: new Date('Jul 17, 2021'),
-  onTic: updateTimerInterfase
+  onTick: updateTimerInterfase
 });
 
 countdownTimer.start();
@@ -38,13 +50,11 @@ function updateTimerInterfase({ days, hours, mins, secs }, refs) {
   refs.secs.textContent = `${secs}`
 }
 
-function createTimeConponents(time) {
-  
-  const days = Math.floor(time / (1000 * 60 * 60 * 24));  
-  const hours = Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const mins = Math.floor((time % (1000 * 60 * 60)) / (1000 * 60));  
-  const secs = Math.floor((time % (1000 * 60)) / 1000);
 
-  return { days, hours, mins, secs };
 
-}
+
+
+
+
+
+
